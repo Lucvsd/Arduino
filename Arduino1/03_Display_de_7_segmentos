@@ -1,0 +1,115 @@
+// Definição dos pinos de controle dos segmentos do display de 7 segmentos
+int a = 8, b = 9, c = 11, d = 4, e = 5, f = 7, g = 6, point = 10;
+char data = '0';  // Variável para armazenar o dado recebido pela Serial
+
+void setup() {
+  // Configuração dos pinos como saída (os pinos controlarão os LEDs do display)
+  pinMode(a, OUTPUT);
+  pinMode(b, OUTPUT);
+  pinMode(c, OUTPUT);
+  pinMode(d, OUTPUT);
+  pinMode(e, OUTPUT);
+  pinMode(f, OUTPUT);
+  pinMode(g, OUTPUT);
+  pinMode(point, OUTPUT);
+  
+  // Inicia a comunicação serial com o computador, usando uma taxa de 9600 bps
+  Serial.begin(9600);
+}
+
+void Clear () {
+  // Desliga todos os pinos do display (segmentos)
+  digitalWrite(a, LOW);
+  digitalWrite(b, LOW);
+  digitalWrite(c, LOW);
+  digitalWrite(d, LOW);
+  digitalWrite(e, LOW);
+  digitalWrite(f, LOW);
+  digitalWrite(g, LOW);
+  digitalWrite(point, LOW);
+}
+
+void H() {
+  // Aciona os pinos correspondentes à letra 'H' no display de 7 segmentos
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(f, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(f, HIGH);
+  
+  // Aguarda 1 segundo antes de apagar os segmentos
+  delay(1000);
+  Clear();  // Limpa o display
+}
+
+void E() {
+  // Aciona os pinos correspondentes à letra 'E'
+  digitalWrite(a, HIGH);
+  digitalWrite(f, HIGH);
+  digitalWrite(g, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(d, HIGH);
+  
+  // Aguarda 1 segundo antes de apagar os segmentos
+  delay(1000);
+  Clear();  // Limpa o display
+}
+
+void L() {
+  // Aciona os pinos correspondentes à letra 'L'
+  digitalWrite(f, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(d, HIGH);
+  
+  // Aguarda 1 segundo antes de apagar os segmentos
+  delay(1000);
+  Clear();  // Limpa o display
+}
+
+void Point() {
+  // Faz o ponto (se existir no display de 7 segmentos) piscar
+  digitalWrite(point, LOW);  // Apaga o ponto
+  delay(500);                // Espera 0,5 segundo
+  digitalWrite(point, HIGH); // Acende o ponto
+  delay(500);                // Espera 0,5 segundo
+}
+
+void O () {
+  // Aciona os pinos correspondentes à letra 'O'
+  digitalWrite(a, HIGH);
+  digitalWrite(b, HIGH);
+  digitalWrite(c, HIGH);
+  digitalWrite(d, HIGH);
+  digitalWrite(e, HIGH);
+  digitalWrite(f, HIGH);
+  
+  // Aguarda 1 segundo antes de apagar os segmentos
+  delay(1000);
+  Clear();  // Limpa o display
+}
+
+void loop () {
+  // Verifica se há dados disponíveis na entrada serial
+  if (Serial.available()) {
+    data = Serial.read();  // Lê o dado recebido via Serial
+  }
+  
+  // Se o dado recebido for '0', executa a função Point (faz o ponto piscar)
+  if (data == '0') {
+    Point();
+  }
+  // Se o dado recebido for '1', escreve a palavra "HELLO" no display
+  else if (data == '1') {
+    H();   // Exibe a letra H
+    E();   // Exibe a letra E
+    L();   // Exibe a letra L
+    Clear();  // Limpa o display após "HEL"
+    delay(200);  // Aguarda 200ms antes de mostrar o próximo "L"
+    L();   // Exibe a letra L novamente
+    O();   // Exibe a letra O
+  }
+  // Caso o dado não seja '0' nem '1', imprime "Unrecognize" no monitor serial
+  else {
+    Serial.println("Unrecognize");
+  }
+}
